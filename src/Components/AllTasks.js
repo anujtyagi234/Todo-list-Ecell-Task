@@ -34,11 +34,16 @@ export default function AllTasks({ sortType, dummyTasks, setDummyTasks }) {
 
   // Function to delete a task
   const handleDelete = (taskId) => {
-    const updatedTasks = dummyTasks.filter((task) => task.id !== taskId);
-    setDummyTasks(updatedTasks);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    setShowDescriptionPopup(false);
+    const confirmed = window.confirm('Are you sure you want to delete this task?');
+  
+    if (confirmed) {
+      const updatedTasks = dummyTasks.filter((task) => task.id !== taskId);
+      setDummyTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      setShowDescriptionPopup(false);
+    }
   };
+  
 
   // Function to mark a task as completed
   const handleCompleted = (taskId) => {
