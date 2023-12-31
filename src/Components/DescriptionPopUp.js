@@ -61,7 +61,7 @@ export default function DescriptionPopUp({ selectedTask, isSelected }) {
                         <h1 className='text-2xl font-bold my-3 mx-5'>Description</h1>
                         {/* Displaying selected task details */}
                         <p className='text-lg font-bold my-3 mx-5'>
-                            {selectedTask ? selectedTask.heading : ''}
+                            {selectedTask ? selectedTask.title : ''}
                         </p>
                         <p className='mx-5 my-3 text-red-500 font-bold'>
                             {/* Format due date if available */}

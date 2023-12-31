@@ -9,7 +9,6 @@ export default function AllTasks({ sortType, dummyTasks, setDummyTasks }) {
   const [selectedTask, setSelectedTask] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [taskState, setTaskState] = useState('pending');
-  const [showDescriptionPopup, setShowDescriptionPopup] = useState(true);
 
   // Function to update window width on resize
   const updateWindowWidth = () => {
@@ -33,26 +32,32 @@ export default function AllTasks({ sortType, dummyTasks, setDummyTasks }) {
   }, [dummyTasks]);
 
   // Function to delete a task
-  const handleDelete = (taskId) => {
+  const handleDelete = (e,taskId) => {
+    e.stopPropagation();
     const confirmed = window.confirm('Are you sure you want to delete this task?');
   
     if (confirmed) {
       const updatedTasks = dummyTasks.filter((task) => task.id !== taskId);
+      if(selectedTask && taskId===selectedTask.id){
+        setSelectedTask(null);
+      }
       setDummyTasks(updatedTasks);
       localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-      setShowDescriptionPopup(false);
     }
   };
   
 
   // Function to mark a task as completed
-  const handleCompleted = (taskId) => {
+  const handleCompleted = (e,taskId) => {
+    e.stopPropagation();
     const updatedTasks = dummyTasks.map((task) =>
       task.id === taskId ? { ...task, pending: false } : task
     );
+    if(selectedTask && taskId===selectedTask.id){
+      setSelectedTask(null);
+    }
     setDummyTasks(updatedTasks);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    setShowDescriptionPopup(false);
   };
 
   // Function to handle task click, toggling selection
@@ -115,10 +120,9 @@ export default function AllTasks({ sortType, dummyTasks, setDummyTasks }) {
                 handleCompleted={handleCompleted}
               />
             ))}
-        </div>
-
         {/* Task state switch */}
-        <div className='flex absolute bottom-0 justify-around items-center w-7/12 h-16 border-t-2 border-black font-bold'>
+      </div>
+        <div className={`flex absolute bottom-0 justify-around items-center ${selectedTask && windowWidth > 1024 ? ' w-7/12 ' : 'w-11/12'} h-16 border-t-2 border-black font-bold`}>
           <div className={`${taskState === 'pending' ? 'bg-purple1 h-full rounded-bl-lg' : ''} flex items-center justify-center w-1/2 cursor-pointer`} onClick={() => { setTaskState('pending') }}>
             Pending
           </div>
@@ -126,20 +130,21 @@ export default function AllTasks({ sortType, dummyTasks, setDummyTasks }) {
             Completed
           </div>
         </div>
-      </div>
+        </div>
+
 
       {/* Description popup based on window width and selected task */}
-      {selectedTask && showDescriptionPopup && windowWidth < 1024 && (
-        <div className='lg:hidden'>
+      {selectedTask && windowWidth < 1024 && (
+        <div>
           <DescriptionPopUp selectedTask={selectedTask} isSelected={selectedTask && windowWidth < 1024} />
         </div>
       )}
 
       {/* Description sidebar based on window width and selected task */}
-      {selectedTask && showDescriptionPopup && (
-        <div className='hidden lg:block min-h-full w-4/12 rounded-r-lg bg-gradient-to-b from-c1 to-c2 border-l-2 border-black overflow-y-auto'>
+      {selectedTask && windowWidth >= 1024 && (
+        <div className='min-h-full w-4/12 rounded-r-lg bg-gradient-to-b from-c1 to-c2 border-l-2 border-black overflow-y-auto'>
           <h1 className='text-2xl font-bold my-3 mx-5'>Description</h1>
-          <p className='text-lg font-bold my-3 mx-5'>{selectedTask ? selectedTask.heading : ''}</p>
+          <p className='text-lg font-bold my-3 mx-5'>{selectedTask ? selectedTask.title : ''}</p>
           <p className='mx-5 my-3 text-red-500 font-bold'>
             {selectedTask ? 'Due: ' + selectedTask.dueDate.split('-').reverse().join('-') : ''}
           </p>

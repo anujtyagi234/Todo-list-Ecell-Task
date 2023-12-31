@@ -37,13 +37,13 @@ export default function Task({ taskId, heading, onClick, isSelected, taskState, 
       {/* Action buttons */}
       <div className={`ml-auto mr-4 ${isTablet ? 'flex flex-col h-24 justify-around' : 'flex'}`}>
         {/* Delete button */}
-        <button className='bg-c3 text-red-700 font-bold py-2 px-4 rounded mr-2 z-55' onClick={() => handleDelete(taskId)}>
+        <button className='bg-c3 text-red-700 font-bold py-2 px-4 rounded mr-2 z-55' onClick={(event) => handleDelete(event,taskId)}>
           Delete
         </button>
 
         {/* Conditional Completed button based on task state */}
         {taskState === 'pending' && (
-          <button className='bg-c4 text-green-700 font-bold py-2 px-4 rounded z-55' onClick={() => handleCompleted(taskId)}>
+          <button className='bg-c4 text-green-700 font-bold py-2 px-4 rounded z-55' onClick={(e) => handleCompleted(e,taskId)}>
             Completed
           </button>
         )}
